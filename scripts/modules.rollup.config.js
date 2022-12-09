@@ -5,18 +5,24 @@
  * These modules DO NOT include their dependencies as we expect those to be
  * handled by the module system.
  */
-import babel from 'rollup-plugin-babel';
-import json from 'rollup-plugin-json';
+import babel from '@rollup/plugin-babel';
+import json from '@rollup/plugin-json';
 
 export default {
   name: 'videojsHttpSourceSelector',
   input: 'src/plugin.js',
   output: [{
     file: 'dist/videojs-http-source-selector.cjs.js',
-    format: 'cjs'
+    format: 'cjs',
+    globals: {
+      'video.js': 'videojs'
+    }
   }, {
     file: 'dist/videojs-http-source-selector.es.js',
-    format: 'es'
+    format: 'es',
+    globals: {
+      'video.js': 'videojs'
+    }
   }],
   external: [
     'global',
@@ -24,12 +30,11 @@ export default {
     'global/window',
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs'
-  },
   plugins: [
     json(),
     babel({
+      babelHelpers: 'bundled',
+      extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', 'ts', 'tsx'],
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
@@ -39,7 +44,6 @@ export default {
         }]
       ],
       plugins: [
-        '@babel/external-helpers',
         '@babel/transform-object-assign'
       ]
     })

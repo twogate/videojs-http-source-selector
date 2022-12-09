@@ -4,10 +4,10 @@
  *
  * This module DOES include its dependencies.
  */
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import json from 'rollup-plugin-json';
-import resolve from 'rollup-plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import json from '@rollup/plugin-json';
+import resolve from '@rollup/plugin-node-resolve';
 
 export default {
   name: 'videojsHttpSourceSelector',
@@ -15,7 +15,13 @@ export default {
   output: {
     name: 'videojs-http-source-selector',
     file: 'dist/videojs-http-source-selector.js',
-    format: 'umd'
+    format: 'umd',
+    globals: {
+      'video.js': 'videojs',
+      'global': 'window',
+      'global/window': 'window',
+      'global/document': 'document'
+    }
   },
   external: [
     'global',
@@ -23,12 +29,6 @@ export default {
     'global/document',
     'video.js'
   ],
-  globals: {
-    'video.js': 'videojs',
-    'global': 'window',
-    'global/window': 'window',
-    'global/document': 'document'
-  },
   plugins: [
     resolve({
       browser: true,
@@ -40,6 +40,8 @@ export default {
       sourceMap: false
     }),
     babel({
+      babelHelpers: 'bundled',
+      extensions: ['.js', '.jsx', '.es6', '.es', '.mjs', 'ts', 'tsx'],
       babelrc: false,
       exclude: 'node_modules/**',
       presets: [
@@ -49,7 +51,6 @@ export default {
         }]
       ],
       plugins: [
-        '@babel/external-helpers',
         '@babel/transform-object-assign'
       ]
     })

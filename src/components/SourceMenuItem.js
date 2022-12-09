@@ -2,8 +2,22 @@ import videojs from 'video.js';
 const MenuItem = videojs.getComponent('MenuItem');
 const Component = videojs.getComponent('Component');
 
-class SourceMenuItem extends MenuItem
-{
+/**
+ * MenuItem for changing the video source
+ *
+ * @return {SourceMenuItem} Sorted array of SourceMenuItems
+*/
+class SourceMenuItem extends MenuItem {
+  /**
+   * Create SourceMenuItems and sort them
+   *
+   * @param {videojs.Player} player
+   * A videojs player
+   *
+   * @param {{label, index, selected, sortVal, selectable: true, multiSelectable: false}} options
+   * Multiselectable
+   *
+  */
   constructor(player, options) {
     options.selectable = true;
     options.multiSelectable = false;
@@ -11,27 +25,29 @@ class SourceMenuItem extends MenuItem
     super(player, options);
   }
 
+  /**
+   * Function called whenever a SourceMenuItem is clicked
+  */
   handleClick() {
-    var selected = this.options_;
-    console.log("Changing quality to:", selected.label);
+    const selected = this.options_;
+
     super.handleClick();
 
-    var levels = this.player().qualityLevels();
-    for(var i = 0; i < levels.length; i++) {
-      if (selected.index == levels.length) {
-        // If this is the Auto option, enable all renditions for adaptive selection
-        levels[i].enabled = true;
-      } else if (selected.index == i) {
-        levels[i].enabled = true;
-      } else {
-        levels[i].enabled = false;
-      }
+    const levels = this.player().qualityLevels();
+
+    for (let i = 0; i < levels.length; i++) {
+      // If this is the Auto option, enable all renditions for adaptive selection
+      levels[i].enabled = selected.index === levels.length || selected.index === i;
     }
   }
 
+  /**
+  * Create SourceMenuItems and sort them
+  */
   update() {
-    var selectedIndex = this.player().qualityLevels().selectedIndex;
-    this.selected(this.options_.index == selectedIndex);
+    const selectedIndex = this.player().qualityLevels().selectedIndex;
+
+    this.selected(this.options_.index === selectedIndex);
   }
 }
 

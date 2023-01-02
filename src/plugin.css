@@ -1,1 +1,10 @@
-.video-js.vjs-http-source-selector { display: block; }
+.video-js.vjs-http-source-selector {
+  display: block;
+}
+
+.vjs-http-source-selector .vjs-icon-placeholder::before {
+  font-family: VideoJS;
+  font-weight: normal;
+  font-style: normal;
+  content: "\f110";
+}

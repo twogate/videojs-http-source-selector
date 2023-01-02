@@ -138,7 +138,7 @@
      * @return {SourceMenuItem[]} The sum of the two numbers.
     */;
     _proto.buildCSSClass = function buildCSSClass() {
-      return MenuButton.prototype.buildCSSClass.call(this) + ' vjs-icon-cog';
+      return MenuButton.prototype.buildCSSClass.call(this);
     }
 
     /**
@@ -244,8 +244,12 @@
       if (!player.videojsHTTPSouceSelectorInitialized) {
         player.videojsHTTPSouceSelectorInitialized = true;
         var controlBar = player.controlBar;
-        var fullscreenToggle = controlBar.getChild('fullscreenToggle').el();
-        controlBar.el().insertBefore(controlBar.addChild('SourceMenuButton').el(), fullscreenToggle);
+        var fullscreenToggle = controlBar.getChild('fullscreenToggle');
+        if (fullscreenToggle) {
+          controlBar.el().insertBefore(controlBar.addChild('SourceMenuButton').el(), fullscreenToggle.el());
+        } else {
+          controlBar.el().appendChild(controlBar.addChild('SourceMenuButton').el());
+        }
       }
     });
   };
@@ -268,9 +272,7 @@
       var _videojs$obj;
       var merge = (videojs == null ? void 0 : (_videojs$obj = videojs.obj) == null ? void 0 : _videojs$obj.merge) || videojs.mergeOptions;
       onPlayerReady(_this, merge(defaults, options));
-      // this.getChild('controlBar').addChild('SourceMenuButton', {});
     });
-
     videojs.registerComponent('SourceMenuButton', SourceMenuButton);
     videojs.registerComponent('SourceMenuItem', SourceMenuItem);
   };

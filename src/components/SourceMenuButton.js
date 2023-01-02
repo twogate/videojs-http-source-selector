@@ -59,7 +59,7 @@ class SourceMenuButton extends MenuButton {
    * @return {SourceMenuItem[]} The sum of the two numbers.
   */
   buildCSSClass() {
-    return MenuButton.prototype.buildCSSClass.call(this) + ' vjs-icon-cog';
+    return MenuButton.prototype.buildCSSClass.call(this);
   }
 
   /**

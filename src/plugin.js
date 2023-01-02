@@ -44,9 +44,13 @@ const onPlayerReady = (player, options) => {
     if (!player.videojsHTTPSouceSelectorInitialized) {
       player.videojsHTTPSouceSelectorInitialized = true;
       const controlBar = player.controlBar;
-      const fullscreenToggle = controlBar.getChild('fullscreenToggle').el();
+      const fullscreenToggle = controlBar.getChild('fullscreenToggle');
 
-      controlBar.el().insertBefore(controlBar.addChild('SourceMenuButton').el(), fullscreenToggle);
+      if (fullscreenToggle) {
+        controlBar.el().insertBefore(controlBar.addChild('SourceMenuButton').el(), fullscreenToggle.el());
+      } else {
+        controlBar.el().appendChild(controlBar.addChild('SourceMenuButton').el());
+      }
     }
   });
 };
@@ -68,7 +72,6 @@ const httpSourceSelector = function(options) {
     const merge = videojs?.obj?.merge || videojs.mergeOptions;
 
     onPlayerReady(this, merge(defaults, options));
-    // this.getChild('controlBar').addChild('SourceMenuButton', {});
   });
 
   videojs.registerComponent('SourceMenuButton', SourceMenuButton);

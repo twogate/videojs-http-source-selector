@@ -27,28 +27,26 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import videojs from 'video.js';
-import SourceMenuItem from './SourceMenuItem';
+import SourceMenuItem from './SourceMenuItem.js';
 
 const MenuButton = videojs.getComponent('MenuButton');
 
 /**
  * A button that hides/shows sorted SourceMenuItems
-*/
+ */
 class SourceMenuButton extends MenuButton {
   /**
    * Create SourceMenuItems and sort them
    *
    * @param {videojs.Player} player
    * videojs player
-   *
    * @param {{default}} options
    * high | low
-   *
-  */
+   */
   constructor(player, options) {
     super(player, options);
 
-    MenuButton.apply(this, arguments);
+    Reflect.apply(MenuButton, this, arguments);
 
     const qualityLevels = this.player().qualityLevels();
 
@@ -56,12 +54,12 @@ class SourceMenuButton extends MenuButton {
     // This determines a bias to set initial resolution selection.
     if (options &amp;&amp; options.default) {
       if (options.default === 'low') {
-        for (let i = 0; i &lt; qualityLevels.length; i++) {
-          qualityLevels[i].enabled = (i === 0);
+        for (const [index, qualityLevel] of qualityLevels.entries()) {
+          qualityLevel.enabled = (index === 0);
         }
       } else if (options.default === 'high') {
-        for (let i = 0; i &lt; qualityLevels.length; i++) {
-          qualityLevels[i].enabled = (i === (qualityLevels.length - 1));
+        for (let index = 0; index &lt; qualityLevels.length; index++) {
+          qualityLevels[index].enabled = (index === (qualityLevels.length - 1));
         }
       }
     }
@@ -73,8 +71,8 @@ class SourceMenuButton extends MenuButton {
   /**
    * Create div with videojs classes
    *
-   * @return {Element} The sum of the two numbers.
-  */
+   * @returns {videojs.MenuButton} The sum of the two numbers.
+   */
   createEl() {
     return videojs.dom.createEl('div', {
       className: 'vjs-http-source-selector vjs-menu-button vjs-menu-button-popup vjs-control vjs-button'
@@ -84,8 +82,8 @@ class SourceMenuButton extends MenuButton {
   /**
    * Create SourceMenuItems and sort them
    *
-   * @return {SourceMenuItem[]} The sum of the two numbers.
-  */
+   * @returns {SourceMenuItem[]} The sum of the two numbers.
+   */
   buildCSSClass() {
     return MenuButton.prototype.buildCSSClass.call(this);
   }
@@ -93,8 +91,8 @@ class SourceMenuButton extends MenuButton {
   /**
    * Update the menu button
    *
-   * @return {any} _
-  */
+   * @returns {videojs.MenuButton} The updated menu button
+   */
   update() {
     return MenuButton.prototype.update.call(this);
   }
@@ -102,8 +100,8 @@ class SourceMenuButton extends MenuButton {
   /**
    * Create SourceMenuItems and sort them
    *
-   * @return {SourceMenuItem[]} Sorted array of SourceMenuItems
-  */
+   * @returns {SourceMenuItem[]} Sorted array of SourceMenuItems
+   */
   createItems() {
     const menuItems = [];
     const levels = this.player().qualityLevels();
@@ -114,33 +112,34 @@ class SourceMenuButton extends MenuButton {
 
       // Display height if height metadata is provided with the stream, else use bitrate
       let label = `${index}`;
-      let sortVal = index;
+      let sortValue = index;
+      const level = levels[index];
 
-      if (levels[index].height) {
-        label = `${levels[index].height}p`;
-        sortVal = parseInt(levels[index].height, 10);
-      } else if (levels[index].bitrate) {
-        label = `${Math.floor(levels[index].bitrate / 1e3)} kbps`;
-        sortVal = parseInt(levels[index].bitrate, 10);
+      if (level.height) {
+        label = `${level.height}p`;
+        sortValue = Number.parseInt(level.height, 10);
+      } else if (level.bitrate) {
+        label = `${Math.floor(level.bitrate / 1e3)} kbps`;
+        sortValue = Number.parseInt(level.bitrate, 10);
       }
 
       // Skip duplicate labels
-      if (labels.indexOf(label) !== -1) {
+      if (labels.includes(label)) {
         continue;
       }
       labels.push(label);
 
-      menuItems.push(new SourceMenuItem(this.player_, { label, index, selected, sortVal }));
+      menuItems.push(new SourceMenuItem(this.player_, { label, index, selected, sortValue }));
     }
 
     // If there are multiple quality levels, offer an 'auto' option
     if (levels.length > 1) {
-      menuItems.push(new SourceMenuItem(this.player_, { label: 'Auto', index: levels.length, selected: false, sortVal: 99999 }));
+      menuItems.push(new SourceMenuItem(this.player_, { label: 'Auto', index: levels.length, selected: false, sortValue: 99_999 }));
     }
 
     // Sort menu items by their label name with Auto always first
     menuItems.sort(function(a, b) {
-      return b.options_.sortVal - a.options_.sortVal;
+      return b.options_.sortValue - a.options_.sortValue;
     });
 
     return menuItems;
@@ -164,7 +163,7 @@ export default SourceMenuButton;
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Sun Jan 01 2023 21:31:59 GMT-0500 (Eastern Standard Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.0</a> on Wed Jan 04 2023 11:54:31 GMT-0500 (Eastern Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

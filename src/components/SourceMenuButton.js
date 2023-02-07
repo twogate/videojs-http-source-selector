@@ -18,9 +18,7 @@ class SourceMenuButton extends MenuButton {
   constructor(player, options) {
     super(player, options);
 
-    Reflect.apply(MenuButton, this, arguments);
-
-    const qualityLevels = this.player().qualityLevels();
+    const qualityLevels = this.player_.qualityLevels();
 
     // Handle options: We accept an options.default value of ( high || low )
     // This determines a bias to set initial resolution selection.
@@ -37,7 +35,7 @@ class SourceMenuButton extends MenuButton {
     }
 
     // Bind update to qualityLevels changes
-    this.player().qualityLevels().on(['change', 'addqualitylevel'], videojs.bind(this, this.update));
+    this.player_.qualityLevels().on(['change', 'addqualitylevel'], videojs.bind(this, this.update));
   }
 
   /**
@@ -76,7 +74,7 @@ class SourceMenuButton extends MenuButton {
    */
   createItems() {
     const menuItems = [];
-    const levels = this.player().qualityLevels();
+    const levels = this.player_.qualityLevels();
     const labels = [];
 
     for (let index = levels.length - 1; index >= 0; index--) {

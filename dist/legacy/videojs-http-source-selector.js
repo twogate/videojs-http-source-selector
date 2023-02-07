@@ -4,8 +4,6 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, global["videojs-http-source-selector"] = factory(global.videojs));
 })(this, (function (videojs) { 'use strict';
 
-  var version = "1.1.7";
-
   function _inheritsLoose(subClass, superClass) {
     subClass.prototype = Object.create(superClass.prototype);
     subClass.prototype.constructor = subClass;
@@ -56,6 +54,8 @@
     throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
   }
 
+  var version = "1.1.7";
+
   var MenuItem = videojs.getComponent('MenuItem');
   var Component = videojs.getComponent('Component');
 
@@ -87,7 +87,7 @@
     _proto.handleClick = function handleClick() {
       var selected = this.options_;
       _MenuItem.prototype.handleClick.call(this);
-      var levels = [].concat(this.player().qualityLevels());
+      var levels = [].concat(this.player_.qualityLevels().levels_);
       for (var _iterator = _createForOfIteratorHelperLoose(levels.entries()), _step; !(_step = _iterator()).done;) {
         var _step$value = _step.value,
           index = _step$value[0],
@@ -100,7 +100,7 @@
      * Create SourceMenuItems and sort them
      */;
     _proto.update = function update() {
-      var selectedIndex = this.player().qualityLevels().selectedIndex;
+      var selectedIndex = this.player_.qualityLevels().selectedIndex;
       this.selected(this.options_.index === selectedIndex);
     };
     return SourceMenuItem;
@@ -125,8 +125,7 @@
     function SourceMenuButton(player, options) {
       var _this;
       _this = _MenuButton.call(this, player, options) || this;
-      Reflect.apply(MenuButton, _assertThisInitialized(_this), arguments);
-      var qualityLevels = _this.player().qualityLevels();
+      var qualityLevels = _this.player_.qualityLevels();
 
       // Handle options: We accept an options.default value of ( high || low )
       // This determines a bias to set initial resolution selection.
@@ -146,7 +145,7 @@
       }
 
       // Bind update to qualityLevels changes
-      _this.player().qualityLevels().on(['change', 'addqualitylevel'], videojs.bind(_assertThisInitialized(_this), _this.update));
+      _this.player_.qualityLevels().on(['change', 'addqualitylevel'], videojs.bind(_assertThisInitialized(_this), _this.update));
       return _this;
     }
 
@@ -187,7 +186,7 @@
      */;
     _proto.createItems = function createItems() {
       var menuItems = [];
-      var levels = this.player().qualityLevels();
+      var levels = this.player_.qualityLevels();
       var labels = [];
       for (var index = levels.length - 1; index >= 0; index--) {
         var selected = index === levels.selectedIndex;
@@ -238,77 +237,71 @@
 
   // Default options for the plugin.
   var defaults = {};
-  var registerPlugin = videojs.registerPlugin;
-  // const dom = videojs.dom || videojs;
-
-  /**
-   * Function to invoke when the player is ready.
-   *
-   * This is a great place for your plugin to initialize itself. When this
-   * function is called, the player will have its DOM and child components
-   * in place.
-   *
-   * @function onPlayerReady
-   * @param    {videojs.Player} player
-   *           A Video.js player object.
-   * @param    {object} [options={}]
-   *           A plain object containing options for the plugin.
-   * @returns {boolean}
-   *         Returns false if not using Html5 tech
-   */
-  // eslint-disable-next-line no-unused-vars
-  var onPlayerReady = function onPlayerReady(player, options) {
-    player.addClass('vjs-http-source-selector');
-    // This plugin only supports level selection for HLS playback
-    if (player.techName_ !== 'Html5') {
-      console.error(player.techName_);
-      return false;
-    }
-
+  var Plugin = videojs.getPlugin('plugin');
+  var httpSourceSelector = /*#__PURE__*/function (_Plugin) {
+    _inheritsLoose(httpSourceSelector, _Plugin);
     /**
+     * Initialize httpSourceSelector plugin
      *
-     * We have to wait for the manifest to load before we can scan renditions for resolutions/bitrates to populate selections
-     *
+     * @param {object} player
+     * videojs player
+     * @param {{default}} options
+     * high | low
      */
-    // eslint-disable-next-line no-unused-vars
-    player.on(['loadedmetadata'], function (event) {
-      // hack for plugin idempodency... prevents duplicate menubuttons from being inserted into the player if multiple player.httpSourceSelector() functions called.
-      if (!player.videojsHTTPSouceSelectorInitialized) {
-        player.videojsHTTPSouceSelectorInitialized = true;
-        var controlBar = player.controlBar;
-        var fullscreenToggle = controlBar.getChild('fullscreenToggle');
+    function httpSourceSelector(player, options) {
+      var _videojs$obj;
+      var _this;
+      videojs.registerComponent('SourceMenuButton', SourceMenuButton);
+      videojs.registerComponent('SourceMenuItem', SourceMenuItem);
+      var merge = (videojs == null ? void 0 : (_videojs$obj = videojs.obj) == null ? void 0 : _videojs$obj.merge) || videojs.mergeOptions;
+      var settings = merge(defaults, options);
+      _this = _Plugin.call(this, player, settings) || this;
+      _this.options_ = settings;
+      _this.player_ = player;
+      _this.on(player, 'ready', function () {
+        _this.init();
+      });
+      return _this;
+    }
+    var _proto = httpSourceSelector.prototype;
+    _proto.init = function init() {
+      var _this2 = this;
+      this.reset();
+      this.player_.addClass('vjs-http-source-selector');
+      this.player_.videojsHTTPSouceSelectorInitialized = true;
+      if (this.player_.techName_ === 'Html5') {
+        this.on(this.player_, 'loadedmetadata', function () {
+          _this2.metadataLoaded();
+        });
+      } else {
+        console.error(this.player_.techName_ + ' tech is not supported');
+        this.reset();
+      }
+    };
+    _proto.reset = function reset() {
+      this.player_.removeClass('vjs-http-source-selector');
+      if (this.player_.videojsHTTPSouceSelectorInitialized === true) {
+        if (!this.player_.controlBar.getChild('SourceMenuButton')) {
+          this.player_.controlBar.removeChild('SourceMenuButton', {});
+        }
+        this.player_.videojsHTTPSouceSelectorInitialized = false;
+      }
+    };
+    _proto.metadataLoaded = function metadataLoaded() {
+      this.init();
+      var controlBar = this.player_.controlBar;
+      var fullscreenToggle = controlBar.getChild('fullscreenToggle');
+      if (!controlBar.getChild('SourceMenuButton')) {
         if (fullscreenToggle) {
           controlBar.el().insertBefore(controlBar.addChild('SourceMenuButton').el(), fullscreenToggle.el());
         } else {
           controlBar.el().append(controlBar.addChild('SourceMenuButton').el());
         }
       }
-    });
-    return true;
-  };
-
-  /**
-   * A video.js plugin.
-   *
-   * In the plugin function, the value of `this` is a video.js `Player`
-   * instance. You cannot rely on the player being in a "ready" state here,
-   * depending on how the plugin is invoked. This may or may not be important
-   * to you; if not, remove the wait for "ready"!
-   *
-   * @function httpSourceSelector
-   * @param    {object} [options={}]
-   *           An object of options left to the plugin author to define.
-   */
-  var httpSourceSelector = function httpSourceSelector(options) {
-    var _this = this;
-    this.ready(function () {
-      var _videojs$obj;
-      var merge = (videojs == null ? void 0 : (_videojs$obj = videojs.obj) == null ? void 0 : _videojs$obj.merge) || videojs.mergeOptions;
-      onPlayerReady(_this, merge(defaults, options));
-    });
-    videojs.registerComponent('SourceMenuButton', SourceMenuButton);
-    videojs.registerComponent('SourceMenuItem', SourceMenuItem);
-  };
+    };
+    return httpSourceSelector;
+  }(Plugin);
+  var registerPlugin = videojs.registerPlugin;
 
   // Register the plugin with video.js.
   registerPlugin('httpSourceSelector', httpSourceSelector);

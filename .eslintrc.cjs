@@ -17,9 +17,11 @@ module.exports = {
 
   rules: {
     'unicorn/filename-case': 'off',
-    "n/no-unsupported-features/es-syntax": ["error", {
-      "version": ">=16.0.0",
-      "ignores": []
-  }]
+    'n/no-unsupported-features/es-syntax': ['error', {
+      'version': '>=16.0.0',
+      'ignores': []
+  }],
+  'unicorn/prefer-reflect-apply': 'off',
+  'quotes': ['error', 'single']
   }
 };

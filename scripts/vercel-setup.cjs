@@ -18,11 +18,11 @@ function copy() {
     }
   }
   copyFileSync(`${__dirname}/../index.html`, `${publicFolder}/index.html`);
-  copyFileSync(`${modulesFolder}/video.js/dist/video.min.js`, `${publicFolder}/node_modules/video.js/dist/video.min.js`);
-  copyFileSync(`${modulesFolder}/video.js/dist/video-js.min.css`, `${publicFolder}/node_modules/video.js/dist/video-js.min.css`);
+  copyFileSync(`${modulesFolder}/video.js/dist/video.js`, `${publicFolder}/node_modules/video.js/dist/video.min.js`);
+  copyFileSync(`${modulesFolder}/video.js/dist/video-js.css`, `${publicFolder}/node_modules/video.js/dist/video-js.min.css`);
   copyFileSync(`${modulesFolder}/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js`, `${publicFolder}/node_modules/videojs-contrib-quality-levels/dist/videojs-contrib-quality-levels.min.js`);
-  copyFileSync(`${__dirname}/../dist/videojs-http-source-selector.min.js`, `${publicFolder}/dist/videojs-http-source-selector.min.js`);
-  copyFileSync(`${__dirname}/../dist/videojs-http-source-selector.min.css`, `${publicFolder}/dist/videojs-http-source-selector.min.css`);
+  copyFileSync(`${__dirname}/../dist/videojs-http-source-selector.js`, `${publicFolder}/dist/videojs-http-source-selector.min.js`);
+  copyFileSync(`${__dirname}/../dist/videojs-http-source-selector.css`, `${publicFolder}/dist/videojs-http-source-selector.min.css`);
 
 }
 

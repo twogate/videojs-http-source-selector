@@ -31,7 +31,7 @@ class SourceMenuItem extends MenuItem {
 
     super.handleClick();
 
-    const levels = [...this.player().qualityLevels()];
+    const levels = [...this.player_.qualityLevels().levels_];
 
     for (const [index, level] of levels.entries()) {
       level.enabled = selected.index === levels.length || selected.index === index
@@ -42,7 +42,7 @@ class SourceMenuItem extends MenuItem {
    * Create SourceMenuItems and sort them
    */
   update() {
-    const selectedIndex = this.player().qualityLevels().selectedIndex;
+    const selectedIndex = this.player_.qualityLevels().selectedIndex;
 
     this.selected(this.options_.index === selectedIndex);
   }

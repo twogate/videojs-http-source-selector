@@ -29,6 +29,9 @@ class httpSourceSelector extends Plugin {
     this.player_ = player;
 
     this.on(player, 'ready', () => {
+      this.on(player.qualityLevels(), ['addqualitylevel', 'removequalitylevel'], () => {
+        this.init()
+      })
       this.init()
     })
   }

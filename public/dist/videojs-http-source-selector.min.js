@@ -195,6 +195,9 @@
       this.options_ = settings;
       this.player_ = player;
       this.on(player, 'ready', () => {
+        this.on(player.qualityLevels(), ['addqualitylevel', 'removequalitylevel'], () => {
+          this.init();
+        });
         this.init();
       });
     }

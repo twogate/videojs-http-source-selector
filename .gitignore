@@ -27,4 +27,4 @@ node_modules/
 
 # Build-related directories
 test/dist/
-./public
+public/

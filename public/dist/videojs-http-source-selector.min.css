@@ -3,7 +3,7 @@
 .video-js.vjs-http-source-selector {
   display: block; }
 
-.vjs-http-source-selector .vjs-icon-placeholder::before {
+.vjs-http-source-selector > .vjs-menu-button > .vjs-icon-placeholder::before {
   font-family: VideoJS;
   font-weight: normal;
   font-style: normal;

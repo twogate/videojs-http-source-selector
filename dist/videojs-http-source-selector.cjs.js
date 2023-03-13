@@ -84,7 +84,8 @@ class SourceMenuButton extends MenuButton {
     }
 
     // Bind update to qualityLevels changes
-    this.player_.qualityLevels().on(['change', 'addqualitylevel'], videojs.bind(this, this.update));
+    // Todo: switch to Function.prototype.bind
+    this.player_.qualityLevels().on(['change', 'addqualitylevel', 'removequalitylevel'], videojs.bind(this, this.update));
   }
 
   /**
@@ -193,9 +194,6 @@ class httpSourceSelector extends Plugin {
     this.options_ = settings;
     this.player_ = player;
     this.on(player, 'ready', () => {
-      this.on(player.qualityLevels(), ['addqualitylevel', 'removequalitylevel'], () => {
-        this.init();
-      });
       this.init();
     });
   }

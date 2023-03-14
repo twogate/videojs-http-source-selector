@@ -29,12 +29,12 @@ class httpSourceSelector extends Plugin {
     this.player_ = player;
 
     this.on(player, 'ready', () => {
+      this.reset()
       this.init()
     })
   }
 
   init() {
-    this.reset()
     this.player_.addClass('vjs-http-source-selector');
     this.player_.videojsHTTPSouceSelectorInitialized = true;
     if (this.player_.techName_ === 'Html5') {
@@ -58,7 +58,6 @@ class httpSourceSelector extends Plugin {
   }
 
   metadataLoaded() {
-    this.init()
     const controlBar = this.player_.controlBar;
     const fullscreenToggle = controlBar.getChild('fullscreenToggle');
     if (!controlBar.getChild('SourceMenuButton')) {

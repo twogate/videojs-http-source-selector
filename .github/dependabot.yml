@@ -8,14 +8,6 @@ updates:
       - "PR: waiting for review"
       - "PR: dependencies"
     open-pull-requests-limit: 15
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "weekly"
-    labels:
-      - "PR: waiting for review"
-      - "PR: dependencies"
-    open-pull-requests-limit: 15
     groups:
       babel:
         patterns:
@@ -29,3 +21,11 @@ updates:
         patterns:
           - "rollup"
           - "@rollup/*"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "PR: waiting for review"
+      - "PR: dependencies"
+    open-pull-requests-limit: 15
